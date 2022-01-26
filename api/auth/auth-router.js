@@ -3,7 +3,9 @@ const { checkUsernameExists, validateRoleName } = require('./auth-middleware');
 const { JWT_SECRET } = require("../secrets"); // use this secret!
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const Users = require('../users/users-model')
-const createToken = require('./auth-token-creator')
+const createToken = require('./auth-token-creator');
+const { restart } = require("nodemon");
+
 
 router.post("/register", validateRoleName, (req, res, next) => {
   /**
@@ -60,6 +62,8 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
           message: `${username} is back!`,
           token: token
          })
+        } else {
+          res.status(401).json({ message: 'invalid credentials' })
         }
       })
       .catch(err => {
